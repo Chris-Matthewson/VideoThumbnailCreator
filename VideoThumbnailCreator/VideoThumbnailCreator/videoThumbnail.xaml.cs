@@ -21,15 +21,19 @@ namespace VideoThumbnailCreator
     /// </summary>
     public partial class videoThumbnail : UserControl
     {
+        private int _width;
+        private int _height;
         public videoThumbnail(int width, int height, Uri source)
         {
+            _height = height;
+            _width = width;
             InitializeComponent();
-            this.Width = width;
-            this.Height = height;
-            canvas.Width = width;
-            canvas.Height = height;
-            theImage.Width = width;
-            theImage.Height = height;
+            this.Width = _width;
+            this.Height = _height;
+            canvas.Width = _width;
+            canvas.Height = _height;
+            theImage.Width = _width;
+            theImage.Height = _height;
 
             startLoading(source);
            
@@ -43,30 +47,39 @@ namespace VideoThumbnailCreator
 
         private async void mediaOpened(object sender, RoutedEventArgs e)
         {
+            //make a media player
             var player = new MediaPlayer { Volume = 0, ScrubbingEnabled = true };
 
+            //open the media and pause to capture frame
             player.Open(theMedElement.Source);
             player.Pause();
 
+            //set the position
             player.Position = TimeSpan.FromSeconds(3);
-            await Task.Run(() => Thread.Sleep(1000));
+            //wait for the position to buffer
+            await Task.Run(() => Thread.Sleep(3000));
 
-
-            var rtb = new RenderTargetBitmap(300, 300, 96, 96, PixelFormats.Pbgra32);
+            //create a rendertarget and a visual
+            var rtb = new RenderTargetBitmap(_width, _height, 96, 96,PixelFormats.Pbgra32);
             var dv = new DrawingVisual();
 
+            //draw the video to a rectangle
             using (DrawingContext dc = dv.RenderOpen())
-                dc.DrawVideo(player, new Rect(0, 0, 300, 300));
+            {
+                dc.DrawVideo(player, new Rect(0, 0, _width, _height));
+            }
 
+            //render the frame
             rtb.Render(dv);
+
+            //create a bitmap frame
             var frame = BitmapFrame.Create(rtb).GetCurrentValueAsFrozen();
 
-            var thumbnailFrame = BitmapFrame.Create(frame as BitmapSource).GetCurrentValueAsFrozen();
-
-            var encoder = new JpegBitmapEncoder();
-            encoder.Frames.Add(thumbnailFrame as BitmapFrame);
+            //close the media player, we are done with it
             player.Close();
-            theImage.Source = thumbnailFrame as BitmapFrame;
+
+            //set the thumbnail
+            theImage.Source = frame as BitmapFrame;
         }
     }
 }

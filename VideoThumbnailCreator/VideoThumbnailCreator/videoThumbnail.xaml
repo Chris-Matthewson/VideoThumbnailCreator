@@ -7,6 +7,6 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="300" VerticalAlignment="Top" Width="300">
         <MediaElement x:Name="theMedElement" Height="100" Width="100" Visibility="Hidden" MediaOpened="mediaOpened"/>
-        <Image x:Name="theImage" Height="100" Width="100"/>
+        <Image x:Name="theImage" Height="100" Width="100" Source="Media/videoIcon.png"/>
     </Canvas>
 </UserControl>

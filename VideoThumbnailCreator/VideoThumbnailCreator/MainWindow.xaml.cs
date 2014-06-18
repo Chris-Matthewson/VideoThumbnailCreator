@@ -28,7 +28,9 @@ namespace VideoThumbnailCreator
         {
             InitializeComponent();
 
-            canvas.Children.Add(new videoThumbnail(300,300,new Uri("c:/vid.mp4")));
+
+            canvas.Children.Add(new videoThumbnail(300, 300, new Uri("c:/vid.mp4")));
+
         }
 
     }
