@@ -41,12 +41,14 @@ namespace VideoThumbnailCreator
 
         private async void startLoading(Uri source)
         {
-            await Task.Run(() => Thread.Sleep(50));
             theMedElement.Source = source;
+            await Task.Run(() => Thread.Sleep(50));
+            
         }
 
         private async void mediaOpened(object sender, RoutedEventArgs e)
         {
+            theMedElement.Volume = 0.0;
             //make a media player
             var player = new MediaPlayer { Volume = 0, ScrubbingEnabled = true };
 
@@ -80,6 +82,7 @@ namespace VideoThumbnailCreator
 
             //set the thumbnail
             theImage.Source = frame as BitmapFrame;
+            canvas.Children.Remove(theMedElement);
         }
     }
 }
